@@ -145,7 +145,7 @@ thread_to_wake(void)
 }
 //--------------END ADDED----------------
   
-
+//-------------CHANGED--------------------
 /* Initializes the threading system by transforming the code
    that's currently running into a thread.  This can't work in
    general and it is possible in this case only because loader.S
@@ -175,6 +175,7 @@ thread_init (void)
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
 }
+//----------------END CHANGED-----------------
 
 /* Starts preemptive thread scheduling by enabling interrupts.
    Also creates the idle thread. */
@@ -322,17 +323,17 @@ thread_unblock (struct thread *t)
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
-  list_insert_ordered(&ready_list, &t->elem, &priority_comparator, NULL);
-  //list_push_back (&ready_list, &t->elem);
+  //list_insert_ordered(&ready_list, &t->elem, &priority_comparator, NULL);
+  list_push_back (&ready_list, &t->elem);
   t->status = THREAD_READY;
-  if(t->priority > thread_current()->priority && 
-       thread_current() != idle_thread)
-  {
-    if(!intr_context())
-      thread_yield();
-    else
-      intr_yield_on_return();
-  }
+  //if(t->priority > thread_current()->priority && 
+       //thread_current() != idle_thread)
+  //{
+    //if(!intr_context())
+      //thread_yield();
+    //else
+      //intr_yield_on_return();
+  //}
   intr_set_level (old_level);
 }
 //------------END CHANGED----------------
@@ -404,9 +405,9 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    //list_push_back (&ready_list, &cur->elem);
-    list_insert_ordered(&ready_list, &cur->elem, &priority_comparator,
-                        NULL);
+    list_push_back (&ready_list, &cur->elem);
+    //list_insert_ordered(&ready_list, &cur->elem, &priority_comparator,
+      //                  NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);

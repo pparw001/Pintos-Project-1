@@ -96,8 +96,6 @@ timer_sleep (int64_t ticks)
   ASSERT (intr_get_level () == INTR_ON);
   //sends thread to be added to the sleeping_list
   thread_to_sleep(waketime);
-  //while (timer_elapsed (start) < ticks) 
-    //thread_yield ();
 }
 //-----------END CHANGED-----------------
 
